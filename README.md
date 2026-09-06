@@ -1,54 +1,101 @@
-# Origin Labs landing
+<div align="center">
 
-Minimal static company landing built with React, TypeScript, and Vite.
+# Origin Labs
 
-## Local development
+**Build what's next.**  
+Brazilian software house · Product engineering · AI systems · Platforms
 
-Requires Node.js 24 and npm.
+[![CI](https://github.com/originlabsbr/originlabs-landing/actions/workflows/ci.yml/badge.svg)](https://github.com/originlabsbr/originlabs-landing/actions)
+[![license](https://badgen.net/github/license/originlabsbr/originlabs-landing?color=5ba3b0)](LICENSE)
+
+<br />
+
+</div>
+
+---
+
+## Why Origin Labs?
+
+Origin Labs is a Brazilian software house building useful digital products and durable systems. Small team, senior engineering, direct communication: product engineering, AI systems, platforms and infrastructure, data and automation.
+
+- **Ideas first.** Clarify the problem and smallest useful outcome before technology.
+- **Engineering discipline.** Small testable steps, direct communication, sound foundations.
+- **Real impact.** Ship, learn from use, improve what creates value.
+
+## Features
+
+|  |  |
+|--|--|
+| 🌐 **Trilingual** | English, Brazilian Portuguese, and Spanish with persisted selector |
+| 🌗 **Themes** | Light and dark with system preference fallback |
+| ♿ **Accessible** | Semantic landmarks, skip link, keyboard focus, reduced motion |
+| 🐳 **Docker-first** | Unprivileged nginx static image published to GHCR |
+
+## Architecture
+
+One static React page. `src/App.tsx` owns content and translations. `src/styles.css` owns the responsive editorial layout and orbital visual system. Vite emits deployable files to `dist/`. No API, router, or runtime configuration.
+
+```mermaid
+flowchart LR
+    browser(["browser"])
+    nginx["nginx pod<br/>static assets"]
+    react["React + Vite<br/>trilingual static page"]
+
+    browser -->|HTTPS| nginx
+    nginx --> react
+```
+
+See [docs/architecture](docs/architecture/overview.md) for the layout system and [docs/deployment](docs/deployment/setup.md) for the homelab handoff.
+
+## Quick Start
+
+Requirements: Node.js 24 and npm.
 
 ```bash
+git clone https://github.com/originlabsbr/originlabs-landing && cd originlabs-landing
 npm ci
 npm run dev
 ```
 
-Available checks:
+Other useful commands:
 
 ```bash
-npm test
-npm run typecheck
-npm run build
-npm run preview
+npm test            # landing content, locale, and theme tests
+npm run typecheck   # TypeScript check
+npm run build       # production build to dist/
+npm run preview     # preview the production build
 ```
 
-## Architecture
-
-The application is one static React page. `src/App.tsx` owns semantic content and the accessible inline SVG. `src/styles.css` owns the responsive editorial layout, visual system, and reduced-motion behavior. Vite emits deployable files to `dist/`. No API, environment variables, client-side router, or runtime configuration is required.
-
-## Docker
-
-Build and run the production image:
+Production-like stack (unprivileged nginx on `http://localhost:8080`):
 
 ```bash
 docker build -t originlabs-landing .
-docker run --rm -p 8080:80 originlabs-landing
+docker run --rm -p 8080:8080 originlabs-landing
 ```
 
-The image uses a Node build stage and serves static output from nginx. nginx provides SPA fallback, immutable caching for hashed assets, no-cache HTML, gzip, and baseline security headers.
+## Stack
 
-CI publishes `ghcr.io/originlabsbr/originlabs-landing` only from protected delivery branches:
+| Layer | Technology |
+|-------|-----------|
+| UI | React 19, TypeScript, Vite |
+| Styling | Plain CSS, custom properties, no framework |
+| DevOps | Docker, unprivileged nginx, GitHub Actions, GHCR |
+| Deployment | [homelab](https://github.com/mateuseap/homelab) GitOps cluster |
 
-- `develop` receives the `develop` channel tag and a full commit SHA tag.
-- `main` receives the `latest` channel tag and a full commit SHA tag.
+## Documentation
 
-## Homelab handoff
+| Doc | Description |
+|-----|------------|
+| [System Overview](docs/architecture/overview.md) | Layout system, orbital visual, i18n and theme model |
+| [Development Setup](docs/development/setup.md) | Local dev, translations, theme conventions |
+| [Deployment Guide](docs/deployment/setup.md) | GHCR images, homelab manifests, staging and production hosts |
+| [Testing](docs/testing.md) | Test layout and how to run |
+| [References](docs/references.md) | Curated study links for the stack |
 
-Add these files to the homelab repository:
+## Contributing
 
-```text
-apps/originlabs-landing/deployment.yaml
-apps/originlabs-landing/service.yaml
-apps/originlabs-landing/ingress.yaml
-argocd/app-originlabs-landing.yaml
-```
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a PR. Branch from `develop`, use Conventional Commits, keep the test suite green, and assign **@mateuseap** for review on PRs into `develop`.
 
-Use the existing platform namespace file rather than creating another namespace manifest. Reference `ghcr.io/originlabsbr/originlabs-landing:<TAG>` from the deployment. Set the ingress host by replacing `<PUBLIC_HOSTNAME>` with the approved public domain. No ready-to-apply hostname is provided here because the public domain is an infrastructure decision.
+## License
+
+MIT, see [LICENSE](LICENSE).
